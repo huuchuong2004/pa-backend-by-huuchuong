@@ -46,11 +46,13 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ADMIN')")
     public ResponseEntity<BaseResponse<Boolean>> updateProduct(@PathVariable int id ,@Valid @RequestBody UpdateProductRequest updateProductRequest) {
         return ResponseEntity.ok(new BaseResponse<>(productService.update(id,updateProductRequest),"Cập Nhật chi tiết sản phẩm thành công"));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ADMIN')")
     public ResponseEntity<BaseResponse<Boolean>> deleteProduct(@PathVariable int id) {
         return ResponseEntity.ok(new BaseResponse<>(productService.delete(id),"Xóa sản phẩm thành công"));
     }
