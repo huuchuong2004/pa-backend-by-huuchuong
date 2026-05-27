@@ -1,0 +1,8 @@
+services:
+  backend:
+    build: .
+    container_name: lc-store-backend
+    restart: always
+
+    ports:
+      - "8080:8080"

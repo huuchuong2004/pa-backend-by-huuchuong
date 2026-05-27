@@ -1,32 +1,27 @@
 server:
-  port: ${SERVER_PORT:8080}
+  port: 8080
 
 spring:
   application:
     name: lc-store
 
-  server:
-    port: ${PORT:8080}
+  datasource:
+    url: jdbc:mysql://mysql-5fbf98c-huuchuong398-23d2.f.aivencloud.com:17332/defaultdb?ssl-mode=REQUIRED
+    username: avnadmin
+    password: AVNS_LIby6GtBPS__23_bioi
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
-  spring:
-    datasource:
-      url: ${DB_URL}
-      username: ${DB_USER}
-      password: ${DB_PASSWORD}
-      driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
 
-
-    jpa:
+    properties:
       hibernate:
-        ddl-auto: update
-      properties:
-        hibernate:
-          dialect: org.hibernate.dialect.MySQL8Dialect
-
-
+        dialect: org.hibernate.dialect.MySQL8Dialect
 
 springdoc:
   api-docs:
     path: /v3/api-docs
+
   swagger-ui:
     path: /swagger-ui.html

@@ -1,0 +1,158 @@
+API TONG HOP (goi tat ca endpoint)
+
+Base URL:
+- http://localhost:8080
+- Swagger/OpenAPI: http://localhost:8080/swagger-ui.html
+
+Auth:
+- JWT Bearer token
+- Header: Authorization: Bearer <accessToken>
+- Token lay tu: POST /api/users/login
+
+Common headers:
+- Content-Type: application/json
+- Accept: application/json
+
+1) Dang ky
+- POST /api/users
+- Auth: khong can
+- Body (UserRequestRegister):
+  {
+    "username": "nguyenvana",
+    "password": "12345678",
+    "email": "nghianau@gmai.com",
+    "phone": "0845670498",
+    "fullName": "Nau Thanh Nghia"
+  }
+- Response (BaseResponse<Void>):
+  {
+    "data": null,
+    "message": "Tao Tai Khoan Thanh Cong"
+  }
+
+2) Dang nhap
+- POST /api/users/login
+- Auth: khong can
+- Body (UserLoginRequest):
+  {
+    "username": "nghianau",
+    "password": "12345678"
+  }
+- Response (BaseResponse<BaseResponse<AuthResponse>>):
+  {
+    "data": {
+      "data": {
+        "accessToken": "<jwt>",
+        "refreshToken": "<jwt>"
+      },
+      "message": "Dang nhap thanh cong"
+    },
+    "message": "Dang Nhap Thanh Cong"
+  }
+
+3) Lay danh sach san pham
+- GET /api/products?page=0&size=10&sort=id,desc
+- Auth: khong can
+- Response (BaseResponse<Page<Product>>):
+  {
+    "data": {
+      "content": [
+        {
+          "id": 1,
+          "name": "Quan Jean",
+          "description": "Mo ta...",
+          "linkImg": "https://example.com/image.jpg",
+          "variants": [
+            {
+              "id": 10,
+              "color": "Blue",
+              "size": "L",
+              "price": 250000,
+              "quantity": 100
+            }
+          ]
+        }
+      ],
+      "pageable": { /* ... */ },
+      "totalElements": 1,
+      "totalPages": 1
+    },
+    "message": "Lay danh sach san pham thanh cong"
+  }
+
+4) Lay chi tiet san pham
+- GET /api/products/getDetail/{id}
+- Auth: khong can
+- Response (BaseResponse<Product>):
+  {
+    "data": {
+      "id": 1,
+      "name": "Quan Jean",
+      "description": "Mo ta...",
+      "linkImg": "https://example.com/image.jpg",
+      "variants": [
+        {
+          "id": 10,
+          "color": "Blue",
+          "size": "L",
+          "price": 250000,
+          "quantity": 100
+        }
+      ]
+    },
+    "message": "Lay chi tiet san pham thanh cong"
+  }
+
+5) Tao san pham (admin)
+- POST /api/products
+- Auth: can ROLE_ADMIN hoac ADMIN
+- Header: Authorization: Bearer <accessToken>
+- Body (CreateProductRequest):
+  {
+    "name": "Quan Jean",
+    "description": "Quan Jean san xuat tu nha Nghia",
+    "linkImg": "https://example.com/image.jpg",
+    "variants": [
+      {
+        "color": "Blue",
+        "size": "L",
+        "price": 250000,
+        "quantity": 100
+      }
+    ]
+  }
+- Response (BaseResponse<Boolean>):
+  {
+    "data": true,
+    "message": "Tao san pham thanh cong"
+  }
+
+6) Cap nhat san pham (admin)
+- PUT /api/products/{id}
+- Auth: can ROLE_ADMIN hoac ADMIN
+- Header: Authorization: Bearer <accessToken>
+- Body (UpdateProductRequest, field tuy chon):
+  {
+    "name": "Ten moi",
+    "description": "Mo ta moi",
+    "linkImg": "https://example.com/new.jpg"
+  }
+- Response (BaseResponse<Boolean>):
+  {
+    "data": true,
+    "message": "Cap Nhat chi tiet san pham thanh cong"
+  }
+
+7) Xoa san pham (admin)
+- DELETE /api/products/{id}
+- Auth: can ROLE_ADMIN hoac ADMIN
+- Header: Authorization: Bearer <accessToken>
+- Response (BaseResponse<Boolean>):
+  {
+    "data": true,
+    "message": "Xoa san pham thanh cong"
+  }
+
+Loi auth co the gap:
+- 401: {"success":false,"error":"UNAUTHORIZED","message":"Thieu hoac token khong hop le","path":"<uri>"}
+- 403: {"success":false,"error":"FORBIDDEN","message":"Khong du quyen truy cap","path":"<uri>"}

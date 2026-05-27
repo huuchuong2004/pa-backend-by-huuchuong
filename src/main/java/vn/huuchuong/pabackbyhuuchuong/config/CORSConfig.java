@@ -27,7 +27,12 @@ public class CORSConfig {
                         "http://localhost:8083",
                         "http://127.0.0.1:5501"
                         ,"http://localhost:5173"
-                        ,"http://localhost:5174"
+                        ,"http://localhost:5174",
+                        // FE deploy trên VPS
+                        "http://110.172.28.19",
+                        "http://110.172.28.19:3000",
+                        "http://110.172.28.19:5173",
+                        "https://ecom-fe-rosy-psi.vercel.app"
                 ));
                 // nhớ thêm OPTIONS để preflight không lỗi
                 config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));

@@ -1,0 +1,207 @@
+@startuml
+
+skinparam classAttributeIconSize 0
+
+package "vn.huuchuong.pabackbyhuuchuong" {
+  class PaBackByHuuchuongApplication
+}
+
+package "base" {
+  class BaseResponse<T> {
+    - data: T
+    - message: String
+    + success(data: T, message: String): BaseResponse<T>
+    + success(data: T): BaseResponse<T>
+    + error(message: String): BaseResponse<T>
+  }
+}
+
+package "entity" {
+  class Product {
+    - id: int
+    - name: String
+    - description: String
+    - linkImg: String
+  }
+
+  class ProductVariant {
+    - id: int
+    - color: String
+    - size: String
+    - price: double
+    - quantity: int
+  }
+
+  class RefreshToken {
+    - id: Long
+    - username: String
+    - token: String
+    - expiryDate: Instant
+    - userAgent: String
+    - revoked: boolean
+  }
+
+  class User {
+    - id: int
+    - username: String
+    - password: String
+    - email: String
+    - phone: String
+    - fullName: String
+  }
+
+  enum Role {
+    ADMIN
+    USER
+  }
+
+  Product "1" o-- "*" ProductVariant : variants
+  ProductVariant "*" --> "1" Product : product
+  User --> Role : role
+}
+
+package "payload.request" {
+  class CreateProductRequest {
+    - name: String
+    - description: String
+    - linkImg: String
+  }
+
+  class CreateProductVariantRequest {
+    - color: String
+    - size: String
+    - price: double
+    - quantity: int
+  }
+
+  class UpdateProductRequest {
+    - name: String
+    - description: String
+    - linkImg: String
+  }
+
+  class UserLoginRequest {
+    - username: String
+    - password: String
+  }
+
+  class UserRequestRegister {
+    - username: String
+    - password: String
+    - email: String
+    - phone: String
+    - fullName: String
+  }
+
+  CreateProductRequest "1" o-- "*" CreateProductVariantRequest : variants
+}
+
+package "payload.response" {
+  class AuthResponse {
+    - accessToken: String
+    - refreshToken: String
+  }
+
+  class UserLoginResponse {
+    - id: int
+    - username: String
+    - role: Role
+    - fullName: String
+    - userAgent: String
+    - token: String
+  }
+
+  UserLoginResponse --> Role
+}
+
+package "service" {
+  interface ProductService
+  interface ProductVariantService
+  interface UserService
+}
+
+package "service.impl" {
+  class ProductImpl
+  class ProductVariantImpl
+  class UserServiceImpl
+  class RefreshTokenService
+
+  ProductImpl ..|> ProductService
+  ProductVariantImpl ..|> ProductVariantService
+  UserServiceImpl ..|> UserService
+}
+
+package "repository" {
+  interface JpaRepository<T, ID>
+
+  interface ProductRepository
+  interface ProductVariantRepository
+  interface RefreshTokenRepository
+  interface UserRepository
+
+  ProductRepository ..|> JpaRepository
+  ProductVariantRepository ..|> JpaRepository
+  RefreshTokenRepository ..|> JpaRepository
+  UserRepository ..|> JpaRepository
+}
+
+package "controller" {
+  class ProductController
+  class UserController
+}
+
+package "exception" {
+  class BusinessException
+  class GlobalHandlerException
+}
+
+package "config" {
+  class CORSConfig
+  class ModelMaperConfig
+  class OpenApiConfig
+  class SecurityConfig
+}
+
+package "utils" {
+  class JwtUtils
+  class JwtRequestFilter
+}
+
+ProductController --> ProductService
+UserController --> UserService
+
+ProductImpl --> ProductRepository
+ProductImpl --> ProductVariantRepository
+ProductImpl --> Product
+ProductImpl --> ProductVariant
+ProductImpl --> CreateProductRequest
+ProductImpl --> CreateProductVariantRequest
+ProductImpl --> UpdateProductRequest
+ProductImpl --> BusinessException
+
+ProductVariantImpl --> ProductVariantService
+
+UserServiceImpl --> UserRepository
+UserServiceImpl --> RefreshTokenService
+UserServiceImpl --> User
+UserServiceImpl --> Role
+UserServiceImpl --> UserLoginRequest
+UserServiceImpl --> UserRequestRegister
+UserServiceImpl --> AuthResponse
+UserServiceImpl --> UserLoginResponse
+UserServiceImpl --> JwtUtils
+UserServiceImpl --> BusinessException
+
+RefreshTokenService --> RefreshTokenRepository
+RefreshTokenService --> RefreshToken
+RefreshTokenService --> BusinessException
+
+JwtRequestFilter --> JwtUtils
+SecurityConfig --> JwtRequestFilter
+SecurityConfig --> CORSConfig
+ModelMaperConfig --> ModelMapper
+
+GlobalHandlerException --> BaseResponse
+GlobalHandlerException --> BusinessException
+
+@enduml
