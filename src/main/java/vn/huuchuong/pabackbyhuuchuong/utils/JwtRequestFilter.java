@@ -42,6 +42,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         // Các endpoint public khác
                         || path.equals("/api/v1/account/create")
                         || path.equals("/api/v1/product/search")
+                        || path.equals("/api/users/login")
+                        || path.equals("/api/users")
                         // Swagger/OpenAPI
                         || path.startsWith("/swagger-ui")
                         || path.startsWith("/swagger-resources")
